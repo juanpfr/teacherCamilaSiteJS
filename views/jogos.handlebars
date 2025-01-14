@@ -1,0 +1,47 @@
+<!--JOGOS-->
+<article class="jogos">
+    <h2>Aprenda seu inglês jogando!</h2>
+    <section class="catalogo">
+
+        <!-- Exemplo de estrutura de jogo (preencha com os dados reais) -->
+        <div class="boxgame">
+            <h3>Nome do Jogo</h3>
+            <a href="link-do-jogo"><img src="admin/img/foto-jogo.jpg" alt="Nome do Jogo"></a>
+            <p>Descrição do jogo.</p>
+        </div>
+
+        <div class="boxgame">
+            <h3>Nome do Jogo 2</h3>
+            <a href="link-do-jogo-2"><img src="admin/img/foto-jogo-2.jpg" alt="Nome do Jogo 2"></a>
+            <p>Descrição do jogo 2.</p>
+        </div>
+
+    </section>
+</article>
+
+<script>
+    $('.catalogo').slick({
+        centerMode: true,
+        centerPadding: '60px',
+        slidesToShow: 3,
+        responsive: [{
+            breakpoint: 768,
+            settings: {
+                arrows: false,
+                centerMode: true,
+                centerPadding: '40px',
+                slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 480,
+            settings: {
+                arrows: false,
+                centerMode: true,
+                centerPadding: '40px',
+                slidesToShow: 1
+            }
+        }
+        ]
+    });
+</script>
