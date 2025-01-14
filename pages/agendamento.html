@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--Links-->
+    <link rel="stylesheet" href="../assets/css/reset.css">
+
+    <link rel="stylesheet" href="../assets/css/slick.css">
+
+    <link rel="stylesheet" href="../assets/css/slick-theme.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Responsivo -->
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <style>
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem;
+        }
+
+        .calendar {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            overflow: hidden;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .calendar-header {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .calendar-body {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: 100px;
+            gap: 1px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            line-height: 100px;
+            cursor: pointer;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-day.inactive {
+            color: #6c757d;
+            cursor: default;
+        }
+
+        .calendar-day.disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .calendar-day:hover:not(.disabled) {
+            background-color: #e9ecef;
+        }
+
+        .calendar-weekday {
+            background-color: #f8f9fa;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .time-button {
+            flex: 0 0 100px;
+            margin: 0.2rem;
+            text-align: center;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .time-button.selected {
+            background-color: #0056b3;
+        }
+
+        .time-button.disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!--Cabeçalho-->
+    <header>
+
+        <!--Faixa do Topo-->
+        <div class="faixa">
+            <div>
+                <div>
+                    <a href="#">
+                        <h5>Agendamento rápido</h5>
+                        <p>Economize tempo agendando sua aula</p>
+                    </a>
+                </div>
+                <div>
+                    <a href="#">
+                        <h5>Melhore seu inglês</h5>
+                        <p>Inglês para trabalho ou desenvolvimento pessoal</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--Faixa Menu-->
+        <div class="faixaMenu">
+            <div class="site">
+
+                <!--Logo-->
+                <div style="align-items: center;">
+                    <h1>Teacher Camila</h1>
+                </div>
+
+                <!--Menu para desktop-->
+                <nav class="menu">
+                    <ul>
+                        <li><a href="../index.html">Início</a></li>
+                        <li><a href="../pages/sobre.html">Sobre</a></li>
+                        <li><a href="../pages/alunoPagina.html">Aluno</a></li>
+                        <li><a href="../pages/agendamento.html">Agendamento</a></li>
+                        <li><a href="../pages/contato.html">Contato</a></li>
+                    </ul>
+                </nav>
+                <!-- Sessão de login -->
+                <div>
+                    <a href="../pages/login.html">Login</a>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    
+    <div class="container">
+        <div class="calendar-container">
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button class="btn btn-secondary" id="prevMonth">&laquo; Mês Anterior</button>
+                    <span id="monthYear" class="mx-3"></span>
+                    <button class="btn btn-secondary hidden" id="nextMonth">Próximo Mês &raquo;</button>
+                </div>
+                <div id="calendarBody" class="calendar-body">
+                    <div class="calendar-weekday">Dom</div>
+                    <div class="calendar-weekday">Seg</div>
+                    <div class="calendar-weekday">Ter</div>
+                    <div class="calendar-weekday">Qua</div>
+                    <div class="calendar-weekday">Qui</div>
+                    <div class="calendar-weekday">Sex</div>
+                    <div class="calendar-weekday">Sáb</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="timeModal" tabindex="-1" aria-labelledby="timeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="timeModalLabel">Escolha um horário</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="timeButtonsContainer">
+                        <!-- Horários disponíveis serão adicionados aqui -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="submitRequest">Solicitar Aula</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Rodapé-->
+    <footer class="rodape">
+        <div class="site">
+            <div>
+            </div>
+            <div>
+                <div>
+                    <h3>Menu</h3>
+                    <img src="../assets/img/setabaixo.png" alt="seta para baixo">
+                </div>
+                <div>
+                    <h3>Frase do dia</h3>
+                    <img src="../assets/img/setabaixo.png" alt="seta para baixo">
+                </div>
+                <div>
+                    <h3>Contato</h3>
+                    <img src="../assets/img/setabaixo.png" alt="seta para baixo">
+                </div>
+            </div>
+            <div>
+                <ul>
+                    <li><a href="../index.html">Início</a></li>
+                    <li><a href="../pages/sobre.html">Sobre</a></li>
+                    <li><a href="../pages/alunoPagina.html">Aluno</a></li>
+                    <li><a href="../pages/agendamento.hyml">Agendamento</a></li>
+                </ul>
+                <ul>
+                    <h6>"sim ou claro."</h6>
+                </ul>
+                <ul>
+                    <li><a
+                            href="https://wa.me/5511999180518?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20informa%C3%A7%C3%B5es."><img
+                                src="../assets/img/whatsapp.png" alt="whatsapp teacher camila"></a></li>
+                    <li><a href="#"><img src="../assets/img/envelope.png" alt="whatsapp teacher camila"></a></li>
+                    <li><a href="#"><img src="../assets/img/facebook.png" alt="whatsapp teacher camila"></a></li>
+                    <li><a href="#"><img src="../assets/img/instagram.png" alt="whatsapp teacher camila"></a></li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <h4> &reg; Todos os direitos reservados - Camila</h4>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const calendarBody = document.getElementById('calendarBody');
+            const monthYearElement = document.getElementById('monthYear');
+            const prevMonthButton = document.getElementById('prevMonth');
+            const nextMonthButton = document.getElementById('nextMonth');
+            const today = new Date();
+
+            let currentYear = today.getFullYear();
+            let currentMonth = today.getMonth();
+
+            const occupiedTimes = ['08:00', '10:00', '14:00', '16:00'];  // Horários ocupados exemplo
+            const disabledDates = ['2024-12-05', '2024-12-10'];  // Datas desabilitadas exemplo
+
+            const updateCalendar = () => {
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                const firstDayOfWeek = firstDay.getDay();
+                const daysInMonth = lastDay.getDate();
+
+                calendarBody.innerHTML = `
+                    <div class="calendar-weekday">Dom</div>
+                    <div class="calendar-weekday">Seg</div>
+                    <div class="calendar-weekday">Ter</div>
+                    <div class="calendar-weekday">Qua</div>
+                    <div class="calendar-weekday">Qui</div>
+                    <div class="calendar-weekday">Sex</div>
+                    <div class="calendar-weekday">Sáb</div>
+                `;
+
+                // Adicione os espaços vazios antes do primeiro dia do mês
+                for (let i = 0; i < firstDayOfWeek; i++) {
+                    calendarBody.innerHTML += '<div class="calendar-day disabled"></div>';
+                }
+
+                // Adicione os dias do mês
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const currentDay = new Date(currentYear, currentMonth, day);
+                    const formattedDate = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const isToday = currentDay.toDateString() === today.toDateString();
+                    const isDisabled = disabledDates.includes(formattedDate) || currentDay.getDay() === 0 || currentDay.getDay() === 6 || currentDay < today;
+                    const dayClass = isToday ? 'calendar-day active' : 'calendar-day';
+                    const dayClassWithDisabled = isDisabled ? 'calendar-day disabled' : dayClass;
+
+                    calendarBody.innerHTML += `<div class="${dayClassWithDisabled}" data-date="${formattedDate}">${day}</div>`;
+                }
+
+                // Adicione os espaços vazios após o último dia do mês
+                const totalDaysInCalendar = 42; // 6 semanas * 7 dias
+                const daysToAdd = totalDaysInCalendar - (firstDayOfWeek + daysInMonth);
+                for (let i = 0; i < daysToAdd; i++) {
+                    calendarBody.innerHTML += '<div class="calendar-day disabled"></div>';
+                }
+
+                // Verifique se o mês anterior deve ser oculto
+                prevMonthButton.classList.toggle('hidden', currentYear === today.getFullYear() && currentMonth === today.getMonth());
+                // Verifique se o próximo mês deve ser visível
+                nextMonthButton.classList.toggle('hidden', false);
+            };
+
+            const updateMonthYear = () => {
+                const monthNames = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+                monthYearElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            };
+
+            const loadAvailableTimes = (date) => {
+                const timeButtonsContainer = document.getElementById('timeButtonsContainer');
+                const availableTimes = [
+                    '08:00', '09:00', '10:00', '11:00', '12:00',
+                    '13:00', '14:00', '15:00', '16:00', '17:00'
+                ];
+
+                timeButtonsContainer.innerHTML = '';
+                availableTimes.forEach(time => {
+                    const button = document.createElement('button');
+                    button.classList.add('time-button');
+                    button.textContent = time;
+                    if (occupiedTimes.includes(time)) {
+                        button.classList.add('disabled');
+                        button.disabled = true;
+                    } else {
+                        button.addEventListener('click', () => {
+                            button.classList.toggle('selected');
+                        });
+                    }
+                    timeButtonsContainer.appendChild(button);
+                });
+            };
+
+            // Eventos de clique
+            calendarBody.addEventListener('click', (e) => {
+                const dayElement = e.target;
+                if (!dayElement.classList.contains('calendar-day') || dayElement.classList.contains('disabled')) {
+                    return;
+                }
+                const selectedDate = dayElement.dataset.date;
+                loadAvailableTimes(selectedDate);
+                const timeModal = new bootstrap.Modal(document.getElementById('timeModal'));
+                timeModal.show();
+            });
+
+            prevMonthButton.addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                updateCalendar();
+                updateMonthYear();
+            });
+
+            nextMonthButton.addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateCalendar();
+                updateMonthYear();
+            });
+
+            document.getElementById('submitRequest').addEventListener('click', () => {
+                alert('Aula solicitada com sucesso!');
+            });
+
+            // Inicialização
+            updateCalendar();
+            updateMonthYear();
+        });
+    </script>
+</body>
+
+</html>
