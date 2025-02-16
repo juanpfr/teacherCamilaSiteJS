@@ -30,16 +30,23 @@
             <nav class="menu">
                 <ul>
                     <li><a href="/">Início</a></li>
-                    <li><a href="pages/sobre.html">Sobre</a></li>
-                    <li><a href="pages/alunoPagina.html">Aluno</a></li>
-                    <li><a href="pages/agendamento.html">Agendamento</a></li>
-                    <li><a href="pages/contato.html">Contato</a></li>
+                    <li><a href="sobre">Sobre</a></li>
+                    <li><a href="aluno">Aluno</a></li>
+                    <li><a href="agendamento">Agendamento</a></li>
+                    <li><a href="contato">Contato</a></li>
                 </ul>
             </nav>
             <!-- Sessão de login -->
+            {{#if usuario}}
             <div>
-                <a href="pages/login.html">Login</a>
+                <p>Bem-vindo, {{usuario}}</p>
+                <a href="/logout">Sair</a>
             </div>
+            {{else}}
+            <div>
+                <a href="/login">Login</a>
+            </div>
+            {{/if}}
         </div>
     </div>
 
